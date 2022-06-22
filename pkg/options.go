@@ -105,7 +105,7 @@ func WithChanSize(size int) OpFunc {
 	}
 }
 
-//WithLoopTime How often is the length checked and whether it is implemented default 1s
+//Deprecated: WithLoopTime How often is the length checked and whether it is implemented default 1s
 func WithLoopTime(loopTime time.Duration) OpFunc {
 	return func(o *option) {
 		o.loopTime = loopTime
