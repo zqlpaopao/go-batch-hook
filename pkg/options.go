@@ -35,8 +35,7 @@ type option struct {
 type OpFunc func(*option)
 
 func NewOption(opt ...Option) *option {
-	o := &option{}
-	return o.WithOptions(opt...)
+	return clone().WithOptions(opt...)
 }
 
 //apply assignment function entity
@@ -45,7 +44,7 @@ func (o OpFunc) apply(opt *option) {
 }
 
 //clone  new object
-func (o *option) clone() *option {
+func clone() *option {
 	return &option{
 		close:         OPENED,
 		doingSize:     DoingSize,
@@ -64,12 +63,11 @@ func (o *option) clone() *option {
 
 //WithOptions Execute assignment function entity
 func (o *option) WithOptions(opt ...Option) *option {
-	c := o.clone()
 	for _, v := range opt {
-		v.apply(c)
+		v.apply(o)
 	}
-	c.initParams()
-	return c
+	o.initParams()
+	return o
 }
 
 //initParams Initialization parameters
