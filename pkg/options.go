@@ -35,7 +35,18 @@ type option struct {
 type OpFunc func(*option)
 
 func NewOption(opt ...Option) *option {
-	o := &option{
+	o := &option{}
+	return o.WithOptions(opt...)
+}
+
+//apply assignment function entity
+func (o OpFunc) apply(opt *option) {
+	o(opt)
+}
+
+//clone  new object
+func (o *option) clone() *option {
+	return &option{
 		close:         OPENED,
 		doingSize:     DoingSize,
 		handleGoNum:   HandleGoNum,
@@ -48,22 +59,11 @@ func NewOption(opt ...Option) *option {
 		savePanicFunc: defaultSavePanic,
 		wg:            sync.WaitGroup{},
 	}
-	return o.WithOptions(opt...)
-}
 
-//apply assignment function entity
-func (o OpFunc) apply(opt *option) {
-	o(opt)
-}
-
-//clone  new object
-func (o *option) clone() *option {
-	cp := *o
-	return &cp
 }
 
 //WithOptions Execute assignment function entity
-func (o option) WithOptions(opt ...Option) *option {
+func (o *option) WithOptions(opt ...Option) *option {
 	c := o.clone()
 	for _, v := range opt {
 		v.apply(c)
@@ -105,7 +105,7 @@ func WithChanSize(size int) OpFunc {
 	}
 }
 
-//Deprecated: WithLoopTime How often is the length checked and whether it is implemented default 1s
+//WithLoopTime How often is the length checked and whether it is implemented default 1s
 func WithLoopTime(loopTime time.Duration) OpFunc {
 	return func(o *option) {
 		o.loopTime = loopTime
